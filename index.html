@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboards</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script>
+        function create($a) {
+            $.ajax({
+                url: 'back.php',
+                type: 'post',
+                data: {"request": $a},
+                success: function (response) {
+                    //to not have old info on screen
+                    $("#LeaderboardsTable tbody").empty();
+                    $response = JSON.parse(response);
+                    var len = $response.length;
+                    var name = "";
+                    var rank = "";
+                    var tr_str = "";
+                    if (len === undefined) {
+                        len = 1;
+                        for (var i = 0; i < len; i++) {
+                            name = $response.name;
+                            rank = $response.rank;
+                            tr_str = "<tr>" +
+                                "<td align='center'>" + (i + 1) + "</td>" +
+                                "<td align='center'>" + name + "</td>" +
+                                "<td align='center'>" + rank + "</td>" +
+                                "</tr>";
+
+                            $("#LeaderboardsTable tbody").append(tr_str);
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < len; i++) {
+                            name = $response[i].name;
+                            rank = $response[i].rank;
+                            tr_str = "<tr>" +
+                                "<td align='center'>" + (i + 1) + "</td>" +
+                                "<td align='center'>" + name + "</td>" +
+                                "<td align='center'>" + rank + "</td>" +
+                                "</tr>";
+
+                            $("#LeaderboardsTable tbody").append(tr_str);
+                        }
+                    }
+                }
+
+
+            });
+        }
+    </script>
+</head>
+<body>
+<button type="button" class="btn btn-primary" onclick="create('1')">List highest rank to lowest</button>
+<button type="button" class="btn btn-primary" onclick="create('2')">List lowest rank to highest</button>
+<button type="button" class="btn btn-primary" onclick="create('3')">Player with highest rank</button>
+<button type="button" class="btn btn-primary" onclick="create('4')">Player with lowest rank</button>
+
+<div class="container">
+    <table class="table" id="LeaderboardsTable" border="1">
+        <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Rank</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+</body>
+</html>
